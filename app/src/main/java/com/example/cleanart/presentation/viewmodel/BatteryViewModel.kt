@@ -10,4 +10,8 @@ class BatteryViewModel @Inject constructor(val useCases: UseCases) :ViewModel() 
     fun gettingCategory(){
         useCases.gettingCategory()
     }
+
+    fun postCategories(){
+        useCases.postCategories()
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.cleanart.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,8 +30,16 @@ class BatteryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel=ViewModelProvider(this)[BatteryViewModel::class.java]
+
+
         lifecycleScope.launch {
             viewModel.gettingCategory()
+            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory().toString()}")
+        }
+
+        lifecycleScope.launch {
+            viewModel.postCategories()
+            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory().toString()}")
         }
     }
 

@@ -25,7 +25,6 @@ object AppModule {
     fun provideApiService(retrofit: Retrofit): ApiClient {
         return retrofit.create(ApiClient::class.java)
     }
-
     @Provides
     fun  provideBatteryRepoImp(apiClient: ApiClient):RepoImp{
         return RepoImp(apiClient)
