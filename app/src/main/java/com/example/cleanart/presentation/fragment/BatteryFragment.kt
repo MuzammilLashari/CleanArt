@@ -34,12 +34,11 @@ class BatteryFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.gettingCategory()
-            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory().toString()}")
+            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory()}")
         }
 
         lifecycleScope.launch {
             viewModel.postCategories()
-            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory().toString()}")
         }
     }
 
