@@ -1,6 +1,7 @@
 package com.example.cleanart.presentation.fragment
 
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,8 @@ import com.example.cleanart.R
 import com.example.cleanart.databinding.FragmentBatteryBinding
 import com.example.cleanart.presentation.viewmodel.BatteryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -32,13 +35,15 @@ class BatteryFragment : Fragment() {
         viewModel=ViewModelProvider(this)[BatteryViewModel::class.java]
 
 
-        lifecycleScope.launch {
-            viewModel.gettingCategory()
-            Log.i("DataCheck", "onViewCreated: ${viewModel.gettingCategory()}")
-        }
 
         lifecycleScope.launch {
-            viewModel.postCategories()
+            delay(2000)
+            viewModel.gettingCategory()
+        }
+
+       lifecycleScope.launch {
+            viewModel.fetchAnimation()
+            Log.i("DataCheck", "onViewCreated: ${viewModel.fetchAnimation()}")
         }
     }
 
