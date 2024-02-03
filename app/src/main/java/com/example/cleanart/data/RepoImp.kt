@@ -3,30 +3,84 @@ package com.example.cleanart.data
 import android.util.Log
 import com.example.cleanart.ApiClient
 import com.example.cleanart.business.Repo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RepoImp(val apiClient: ApiClient) : Repo {
+class RepoImp(private val apiClient: ApiClient) : Repo {
     val Token = "token 10d3129ad0dae85fe360e01faa83fa7971e47c40"
 
+    //following Lists for Getting Category
+    private var tempList: ArrayList<CategoryDataClass> = ArrayList(emptyList())
+    private var _dataList = MutableStateFlow<ArrayList<CategoryDataClass>>(ArrayList())
+    override var datalist: MutableStateFlow<ArrayList<CategoryDataClass>> = _dataList
 
+    //following Lists for
+    private var tempListAnimation: ArrayList<AnimationDataClass> = ArrayList(emptyList())
+    private var dataListAnimation = MutableStateFlow<ArrayList<AnimationDataClass>>(ArrayList())
+    override var datalistAnimation: MutableStateFlow<ArrayList<AnimationDataClass>> = dataListAnimation
 
-    override fun fetchAnimation() {
-        apiClient.fetchAnimation(Token).enqueue(object : Callback<DataClass> {
-            override fun onResponse(call: Call<DataClass>, response: Response<DataClass>) {
+    override suspend fun gettingCategory(callback: (Boolean) -> Unit) {
+        apiClient.fetchCategories(Token).enqueue(object : Callback<CategoryDataClass> {
+            override fun onResponse(
+                call: Call<CategoryDataClass>,
+                response: Response<CategoryDataClass>
+            ) {
                 if (response.isSuccessful) {
-                    Log.e("responseofapi", response.body()?.data.toString())
+                    val categoryData = response.body()
+                    Log.i("ApiChecking", "responsebody: ${categoryData}")
+                    if (categoryData != null) {
+                        tempList = ArrayList()
+                        tempList.add(categoryData)
+                        _dataList.value = ArrayList(tempList)
+                        callback(true)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<CategoryDataClass>, t: Throwable) {
+                return callback(false)
+            }
+        })
+    }
+
+    override fun fetchAnimation(callback: (Boolean) -> Unit) {
+        apiClient.fetchAnimation(Token).enqueue(object : Callback<AnimationDataClass> {
+            override fun onResponse(
+                call: Call<AnimationDataClass>,
+                response: Response<AnimationDataClass>
+            ) {
+                if (response.isSuccessful) {
+                    val animationData = response.body()
+                    Log.i("ApiChecking", "responsebody: ${animationData}")
+                    if (animationData != null) {
+                        tempListAnimation = ArrayList()
+                        tempListAnimation.add(animationData)
+                        dataListAnimation.value = ArrayList(tempListAnimation)
+                        callback(true)
+                    }
                 }
             }
 
-            override fun onFailure(call: Call<DataClass>, t: Throwable) {
+            override fun onFailure(call: Call<AnimationDataClass>, t: Throwable) {
+                return callback(false)
+            }
+        })
+    }
+
+
+    override fun fetchTrendingAnimation() {
+        apiClient.fetchTrendingAnimation(Token).enqueue(object : Callback<CategoryDataClass> {
+            override fun onResponse(
+                call: Call<CategoryDataClass>,
+                response: Response<CategoryDataClass>
+            ) {
+                if (response.isSuccessful) {
+//                    Log.e("responseofapi", response.body()?.data.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<CategoryDataClass>, t: Throwable) {
 
             }
         })
@@ -36,24 +90,5 @@ class RepoImp(val apiClient: ApiClient) : Repo {
         Log.e("callcheckfun", "I am working yes")
     }
 
-    override  fun gettingCategory(): Flow<List<categories>> = flow {
 
-        Log.e("responseofapierror", "i am working")
-        apiClient.fetchCategories(Token).enqueue(object : Callback<DataClass> {
-            override fun onResponse(call: Call<DataClass>, response: Response<DataClass>) {
-                if (response.isSuccessful) {
-                    Log.e("responseofapi", response.body()?.data.toString())
-                        CoroutineScope(Dispatchers.IO).launch {
-                            emit(response.body()!!.data)
-                        }
-                }else{
-                    Log.e("responseofapierror", response.toString())
-                }
-            }
-
-            override fun onFailure(call: Call<DataClass>, t: Throwable) {
-                Log.e("responseofapierror", t.message.toString())
-            }
-        })
-    }.flowOn(Dispatchers.IO)
 }

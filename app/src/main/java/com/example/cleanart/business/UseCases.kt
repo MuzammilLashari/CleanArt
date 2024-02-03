@@ -1,19 +1,31 @@
 package com.example.cleanart.business
 
 import android.util.Log
+import com.example.cleanart.data.CategoryDataClass
 import com.example.cleanart.data.RepoImp
-import com.example.cleanart.data.categories
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class UseCases(val repoImp: RepoImp) {
-    fun gettingCategory(): Flow<List<categories>> {
+
+    //for categories
+    var datalist: MutableStateFlow<ArrayList<CategoryDataClass>> = repoImp.datalist
+
+
+    suspend fun gettingCategory(callback: (Boolean) -> Unit) {
         Log.e("responseofapierror", "i am working")
-      return  repoImp.gettingCategory()
+        repoImp.gettingCategory(callback)
     }
 
-    fun postCategories() {
-        repoImp.fetchAnimation()
+    fun fetchAnimation(callback: (Boolean) -> Unit) {
+        Log.e("responseofapierror", "i am working")
+        //     return  repoImp.gettingCategory()
     }
+
+    fun fetchTrendingAnimation(callback: (Boolean) -> Unit) {
+        Log.e("responseofapierror", "i am working")
+        //   return  repoImp.gettingCategory()
+    }
+
     fun check() {
         repoImp.check()
     }

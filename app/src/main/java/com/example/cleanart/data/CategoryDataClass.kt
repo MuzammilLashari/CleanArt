@@ -2,7 +2,7 @@ package com.example.cleanart.data
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class DataClass(   val status: String,
+data class CategoryDataClass(   val status: String,
                         val message: String? = null,
                         val data: List<categories>
 )
@@ -19,5 +19,4 @@ data class categories (
     @JsonProperty("updated_at")
     val updatedAt: String,
 )
-
 
